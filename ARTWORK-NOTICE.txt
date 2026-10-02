@@ -1,7 +1,0 @@
-Gather Alee / AleeGather — artwork notice
-
-Node artwork under Artwork/Nodes/ and GatherMateIcon.tga originated from the WotLK GatherMate package supplied by the user for compatibility work. The corresponding GatherMate license is included as GATHERMATE-LICENSE.txt.
-
-The Gather Alee engine code is purpose-built for WoW WotLK 3.3.5a.
-
-Route-map artwork in Artwork/GuideRoutes/ is separate from the GatherMate node artwork. Before publishing those maps on CurseForge or another public distribution platform, verify that you have redistribution rights from the original copyright holder.
