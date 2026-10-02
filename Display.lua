@@ -141,7 +141,11 @@ function AG:InitializeDisplay()
 
   if WorldMapFrame and WorldMapFrame.HookScript then
     WorldMapFrame:HookScript("OnShow",function() AG:RefreshWorldMap() end)
-    WorldMapFrame:HookScript("OnHide",function() releaseAll(mapPins,mapPool) end)
+    WorldMapFrame:HookScript("OnHide",function()
+      releaseAll(mapPins,mapPool)
+      -- Recalculate minimap pins only after the world map has fully closed.
+      AG:RefreshMinimap()
+    end)
   end
   self:CreateMinimapButton()
 end
@@ -197,6 +201,12 @@ local function rotate(dx,dy,a)
 end
 
 function AG:RefreshMinimap()
+  -- WoW 3.3.5a temporarily changes the legacy map coordinate context while
+  -- WorldMapFrame is open. Refreshing minimap pins during that time can make
+  -- them appear to drift/follow the map even though the player has not moved.
+  -- Keep the existing minimap pins frozen until the world map closes.
+  if WorldMapFrame and WorldMapFrame:IsShown() then return end
+
   releaseAll(miniPins,miniPool)
   if not self.db or not self.db.profile.showMinimap or not Minimap or not Minimap:IsShown() then return end
   local zone,px,py=self:GetPlayerPosition()
