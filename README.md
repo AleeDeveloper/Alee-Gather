@@ -47,15 +47,4 @@ Gather Alee uses the account-wide SavedVariable `AleeGatherDB`, so learned node 
 
 ## Credits / third-party assets
 
-The addon includes node artwork adapted from a user-supplied WotLK GatherMate package; its license is included in `GATHERMATE-LICENSE.txt`. Route-map artwork should only be redistributed publicly when you have permission or an appropriate license from its original creator.
-
-## IMAGES
-
-<img width="913" height="836" alt="Captura de pantalla 2026-10-01 210315" src="https://github.com/user-attachments/assets/80609294-a8c5-42d5-9aaa-e8ee66aab490" />
-<img width="830" height="957" alt="Captura de pantalla 2026-10-01 210334" src="https://github.com/user-attachments/assets/ec40102e-8304-492a-9ef8-15074c1536d4" />
-<img width="397" height="393" alt="Captura de pantalla 2026-10-01 210345" src="https://github.com/user-attachments/assets/efb017ed-c7fe-4558-baf4-0778749187ef" />
-<img width="319" height="284" alt="Captura de pantalla 2026-10-01 210705" src="https://github.com/user-attachments/assets/97a9ab01-9e50-4967-80ac-836af15734db" />
-<img width="935" height="621" alt="Captura de pantalla 2026-10-01 210723" src="https://github.com/user-attachments/assets/0dbfe4b1-58c0-4031-867c-0aa6e4cd2408" />
-<img width="463" height="314" alt="Captura de pantalla 2026-10-01 210304" src="https://github.com/user-attachments/assets/4af856be-4525-47a6-8bd4-2f417f2e660e" />
-
-
+AleeGather's original source code and original project assets are covered by `ALEEGATHER-LICENSE.txt`. Third-party materials are documented separately in `THIRD-PARTY-NOTICES.txt`, with the original GatherMate license preserved in `GATHERMATE-LICENSE.txt`.

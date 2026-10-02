@@ -3,6 +3,7 @@
 ## Notes: Lightweight gathering tracker with map/minimap nodes, radar, sessions and leveling guides for WotLK 3.3.5a
 ## Author: Alee Community
 ## Version: 0.40.0-wotlk
+## X-License: All Rights Reserved
 ## SavedVariables: AleeGatherDB
 ## DefaultState: Enabled
 
