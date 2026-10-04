@@ -58,6 +58,12 @@ function AG:BuildProfessionCache()
     ["fishing"]="Fishing", ["pesca"]="Fishing",
     ["engineering"]="Extract Gas", ["ingeniería"]="Extract Gas", ["ingenieria"]="Extract Gas",
     ["skinning"]="Skinning", ["desuello"]="Skinning", ["desollar"]="Skinning",
+    -- zhCN skill-line names
+    ["采矿"]="Mining",
+    ["草药学"]="Herb Gathering", ["采药"]="Herb Gathering",
+    ["钓鱼"]="Fishing",
+    ["工程学"]="Extract Gas",
+    ["剥皮"]="Skinning",
   }
   for name,category in pairs(aliases) do
     local icon=select(3,GetSpellInfo(self.professionSpells[category] or 0))
@@ -273,5 +279,28 @@ function AG:MarkNodeAvailable(zone,id,x,y)
   end
   self:SetNodeState(zone,p,"available")
   if self.RefreshMinimap then self:RefreshMinimap() end
+end
+
+-- Remove only nodes that came from /ag import (source="GatherMate_Data").
+-- Self-gathered points (source="confirmed-loot"/"learned") are preserved.
+function AG:ClearImportedNodes()
+  if not self.db or not self.db.nodes then return 0 end
+  local removed=0
+  for _,z in pairs(self.db.nodes) do
+    for p,rec in pairs(z) do
+      if type(rec)=="table" and rec.source=="GatherMate_Data" then
+        z[p]=nil; removed=removed+1
+      end
+    end
+  end
+  if self.RefreshAll then self:RefreshAll() end
+  return removed
+end
+
+-- Wipe every learned/imported coordinate. Self-gathered points are removed too.
+function AG:ClearAllNodes()
+  if not self.db then return end
+  self.db.nodes={}
+  if self.RefreshAll then self:RefreshAll() end
 end
 
