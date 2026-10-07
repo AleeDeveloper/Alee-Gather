@@ -176,6 +176,25 @@ add(535, "Treasure", "Sturdy Treasure Chest", "Arqueta robusta", "Arqueta robust
 add(536, "Treasure", "Runestone Treasure Chest", "Arqueta de piedras rúnicas", "Arqueta de piedras rúnicas", 0)
 add(537, "Treasure", "Silverbound Treasure Chest", "Arqueta reforzada con plata", "Arqueta reforzada con plata", 0)
 
+-- Chinese node names from the zhCN locale. Registering them in NodeByName is
+-- required for tooltip matching on zhCN/zhTW clients.
+do
+  local loc=AleeGatherLocales and AleeGatherLocales["zhCN"]
+  local cn=loc and loc._nodes
+  if cn then
+    for id,name in pairs(cn) do
+      local n=AG.Nodes[id]
+      if n then n.cn=name; AG.NodeByName[string.lower(name)]=id end
+    end
+  end
+  local aliases=loc and loc._nodesAliases
+  if aliases then
+    for id,name in pairs(aliases) do
+      if AG.Nodes[id] then AG.NodeByName[string.lower(name)]=id end
+    end
+  end
+end
+
 function AG:GetNodeIDByName(name)
   if not name then return nil end
   name = string.gsub(name, '^%s+', '')
@@ -189,6 +208,7 @@ function AG:GetNodeName(id)
   local lang = self:GetLanguage()
   if lang == 'esMX' then return n.mx end
   if lang == 'esES' then return n.es end
+  if (lang == 'zhCN' or lang == 'zhTW') and n.cn then return n.cn end
   return n.en
 end
 

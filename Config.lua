@@ -91,24 +91,33 @@ function AG:InitializeConfig()
   f.radarOpacity=makeSlider(f,"AleeGatherRadarOpacity",35,-625,250,0.25,1,0.05,function(v) AG.db.profile.radar.opacity=v; AG:RefreshRadar() end)
   f.radarOpacityLabel=f:CreateFontString(nil,"OVERLAY","GameFontNormalSmall"); f.radarOpacityLabel:SetPoint("BOTTOMLEFT",f.radarOpacity,"TOPLEFT",0,5)
 
-  f.lang=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.lang:SetWidth(190); f.lang:SetHeight(24); f.lang:SetPoint("BOTTOMLEFT",24,54)
+  -- Bottom button grid: two rows of three equal 188px buttons, 14px gaps,
+  -- aligned to the panel's 24px side margins (24+188+14+188+14+188 = 616).
+  f.lang=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.lang:SetSize(188,24); f.lang:SetPoint("BOTTOMLEFT",24,66)
   f.lang:SetScript("OnClick",function()
-    local order={"auto","enUS","esES","esMX"}; local cur=AG.db.profile.language; local idx=1
+    local order={"auto","enUS","esES","esMX","zhCN"}; local cur=AG.db.profile.language; local idx=1
     for i,v in ipairs(order) do if v==cur then idx=i break end end
     AG.db.profile.language=order[(idx%#order)+1]
     AG:RefreshAll()
   end)
 
-  f.pause=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.pause:SetWidth(130); f.pause:SetHeight(24); f.pause:SetPoint("BOTTOMLEFT",225,54)
+  f.pause=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.pause:SetSize(188,24); f.pause:SetPoint("BOTTOMLEFT",226,66)
   f.pause:SetScript("OnClick",function() AG:ToggleSessionPause(); AG:RefreshHUD() end)
-  f.reset=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.reset:SetWidth(130); f.reset:SetHeight(24); f.reset:SetPoint("LEFT",f.pause,"RIGHT",8,0)
+  f.reset=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.reset:SetSize(188,24); f.reset:SetPoint("BOTTOMLEFT",428,66)
   f.reset:SetScript("OnClick",function() AG:ResetSession() end)
-  f.close=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.close:SetWidth(100); f.close:SetHeight(24); f.close:SetPoint("BOTTOMRIGHT",-24,16)
+  f.clearImported=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.clearImported:SetSize(188,24); f.clearImported:SetPoint("BOTTOMLEFT",24,38)
+  f.clearImported:SetScript("OnClick",function()
+    local n=AG:ClearImportedNodes()
+    AG:Print(string.format(AG:L("CLEAR_IMPORTED_DONE"),n))
+  end)
+  f.clearDB=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.clearDB:SetSize(188,24); f.clearDB:SetPoint("BOTTOMLEFT",226,38)
+  f.clearDB:SetScript("OnClick",function() if AG.ConfirmClearAll then AG.ConfirmClearAll() end end)
+  f.close=CreateFrame("Button",nil,f,"UIPanelButtonTemplate"); f.close:SetSize(188,24); f.close:SetPoint("BOTTOMLEFT",428,38)
   f.close:SetScript("OnClick",function() f:Hide() end)
 
   f.legend=f:CreateFontString(nil,"OVERLAY","GameFontHighlightSmall")
-  f.legend:SetPoint("BOTTOMLEFT",24,94); f.legend:SetWidth(580); f.legend:SetJustifyH("LEFT")
-  f.note=f:CreateFontString(nil,"OVERLAY","GameFontDisableSmall"); f.note:SetPoint("BOTTOMLEFT",24,18); f.note:SetWidth(460); f.note:SetJustifyH("LEFT")
+  f.legend:SetPoint("BOTTOMLEFT",24,96); f.legend:SetWidth(580); f.legend:SetJustifyH("LEFT")
+  f.note=f:CreateFontString(nil,"OVERLAY","GameFontDisableSmall"); f.note:SetPoint("BOTTOMLEFT",24,10); f.note:SetWidth(592); f.note:SetJustifyH("LEFT")
   self:RefreshConfig()
 end
 
@@ -152,6 +161,7 @@ function AG:RefreshConfig()
   local lang=self.db.profile.language
   f.lang:SetText(self:L("LANGUAGE")..": "..(lang=="auto" and self:L("AUTO") or lang))
   f.pause:SetText(self:L("TOGGLE_PAUSE")); f.reset:SetText(self:L("RESET_SESSION")); f.close:SetText(self:L("CLOSE"))
+  f.clearImported:SetText(self:L("CLEAR_IMPORTED")); f.clearDB:SetText(self:L("RESET_DB"))
   f.legend:SetText("|cff44ff55●|r "..self:L("STATE_AVAILABLE").."    |cffff3333●|r "..self:L("STATE_DEPLETED"))
   f.note:SetText(self:L("SEED_NOTE"))
 end
