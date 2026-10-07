@@ -45,7 +45,6 @@ function AG:GetLanguage()
   local loc = GetLocale()
   if loc=="esMX" then return "esMX" end
   if loc=="esES" then return "esES" end
-  if loc=="zhCN" or loc=="zhTW" then return "zhCN" end
   return "enUS"
 end
 
@@ -92,27 +91,6 @@ AG.event:SetScript("OnEvent", function(self,event,...)
   end
 end)
 
-StaticPopupDialogs["ALEEGATHER_CLEAR_ALL"]={
-  button1=ACCEPT,
-  button2=CANCEL,
-  timeout=0,
-  whileDead=1,
-  hideOnEscape=1,
-  showAlert=1,
-  OnAccept=function()
-    AG:ClearAllNodes()
-    AG:Print(AG:L("CLEAR_ALL_DONE"))
-  end,
-}
-
-local function confirmClearAll()
-  StaticPopupDialogs["ALEEGATHER_CLEAR_ALL"].text=AG:L("CLEAR_ALL_CONFIRM")
-  StaticPopupDialogs["ALEEGATHER_CLEAR_ALL"].button1=ACCEPT
-  StaticPopupDialogs["ALEEGATHER_CLEAR_ALL"].button2=CANCEL
-  StaticPopup_Show("ALEEGATHER_CLEAR_ALL")
-end
-AG.ConfirmClearAll=confirmClearAll
-
 SLASH_ALEEGATHER1="/ag"
 SLASH_ALEEGATHER2="/aleegather"
 SlashCmdList["ALEEGATHER"]=function(msg)
@@ -129,11 +107,6 @@ SlashCmdList["ALEEGATHER"]=function(msg)
     AG:ResetSession()
   elseif msg=="import" then
     AG:ImportLegacyTables()
-  elseif msg=="clear" then
-    local n=AG:ClearImportedNodes()
-    AG:Print(string.format(AG:L("CLEAR_IMPORTED_DONE"),n))
-  elseif msg=="clearall" then
-    confirmClearAll()
   elseif msg=="debug" then
     AG.db.profile.debug=not AG.db.profile.debug
     AG:Print("debug="..tostring(AG.db.profile.debug))

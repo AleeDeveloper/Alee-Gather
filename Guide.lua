@@ -503,47 +503,12 @@ AG.GuideData = {
   },
 }
 
--- Chinese guide text from the zhCN locale, merged into GuideData by
--- category/stage/route index so the data above stays untouched.
-do
-  local loc=AleeGatherLocales and AleeGatherLocales["zhCN"]
-  local g=loc and loc._guide
-  if g then
-    for cat,stages in pairs(g) do
-      local dst=AG.GuideData[cat]
-      if dst then
-        for si,s in pairs(stages) do
-          local st=dst[si]
-          if st then
-            st.zonesCN=s.zonesCN or st.zonesCN
-            st.nodesTextCN=s.nodesTextCN or st.nodesTextCN
-            if s.routes then
-              for ri,r in pairs(s.routes) do
-                local rt=st.routes and st.routes[ri]
-                if rt then
-                  rt.labelCN=r.labelCN or rt.labelCN
-                  rt.captionCN=r.captionCN or rt.captionCN
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-end
-
 local function isSpanish(lang)
   return lang=="esES" or lang=="esMX"
 end
 
-local function isChinese(lang)
-  return lang=="zhCN" or lang=="zhTW"
-end
-
-local function tChoice(lang,en,es,cn)
+local function tChoice(lang,en,es)
   if isSpanish(lang) then return es end
-  if isChinese(lang) and cn then return cn end
   return en
 end
 
@@ -761,7 +726,7 @@ function AG:RefreshGuide()
     f.routeCaption:SetText("")
     f.image:SetTexture(nil)
     f.image:Hide()
-    f.noImage:SetText(tChoice(lang,"No route image is available for this profession yet.","Aún no hay una imagen de ruta disponible para esta profesión.","该专业暂时没有可用的路线图片。"))
+    f.noImage:SetText(tChoice(lang,"No route image is available for this profession yet.","Aún no hay una imagen de ruta disponible para esta profesión."))
     f.noImage:Show()
     for i=1,#f.routeButtons do f.routeButtons[i]:Hide() end
     f.note:SetText(self:L("GUIDE_LIGHT"))
@@ -795,16 +760,16 @@ function AG:RefreshGuide()
     f.prevStage:Hide(); f.nextStage:Hide()
   end
   local nodeLabel=(category=="Skinning") and self:L("GUIDE_TARGETS") or self:L("GUIDE_NODES")
-  local nodeText=tChoice(lang, stage.nodesTextEN, stage.nodesTextES, stage.nodesTextCN) or nodeList(stage.nodes)
+  local nodeText=((lang=="enUS") and stage.nodesTextEN or stage.nodesTextES) or nodeList(stage.nodes)
   f.nodes:SetText(nodeLabel..": |cffffffff"..(nodeText or "").."|r")
-  local zones=tChoice(lang, stage.zonesEN, stage.zonesES, stage.zonesCN)
+  local zones=(lang=="enUS") and stage.zonesEN or stage.zonesES
   f.zones:SetText(self:L("GUIDE_ZONES")..":\n|cffffffff"..zones.."|r")
   f.note:SetText(self:L("GUIDE_LIGHT"))
 
   local routes=stage.routes or {}
   AG.guideCurrentRoutes=routes
   if #routes>0 then
-    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r", "|cffffcc55Mapas de ruta|r", "|cffffcc55路线图|r"))
+    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r", "|cffffcc55Mapas de ruta|r"))
     f.prevRoute:Show(); f.nextRoute:Show()
     if not f.routeIndex or f.routeIndex>#routes then f.routeIndex=1 end
     for i=1,#f.routeButtons do
@@ -812,7 +777,7 @@ function AG:RefreshGuide()
       local route=routes[i]
       if route then
         btn.routeIndex=i
-        btn:SetText(tChoice(lang, route.labelEN or ("Route "..i), route.labelES or route.labelEN or ("Ruta "..i), route.labelCN or route.labelEN or ("路线 "..i)))
+        btn:SetText(tChoice(lang, route.labelEN or ("Route "..i), route.labelES or route.labelEN or ("Ruta "..i)))
         btn:Show()
       else
         btn:Hide()
@@ -821,16 +786,16 @@ function AG:RefreshGuide()
 
     local route=routes[f.routeIndex]
     if route then
-      local routeName=tChoice(lang, route.labelEN or ("Route "..f.routeIndex), route.labelES or route.labelEN or ("Ruta "..f.routeIndex), route.labelCN or route.labelEN or ("路线 "..f.routeIndex))
+      local routeName=tChoice(lang, route.labelEN or ("Route "..f.routeIndex), route.labelES or route.labelEN or ("Ruta "..f.routeIndex))
       f.routeSelected:SetText("|cffffffff"..routeName.."|r  |cff888888"..f.routeIndex.."/"..#routes.."|r")
-      f.routeCaption:SetText("|cffffffff"..tChoice(lang, route.captionEN or "", route.captionES or route.captionEN or "", route.captionCN or route.captionEN or "").."|r")
+      f.routeCaption:SetText("|cffffffff"..tChoice(lang, route.captionEN or "", route.captionES or route.captionEN or "").."|r")
       f.image:SetTexture(route.image)
       f.image:SetTexCoord(0,1,0,1)
       f.image:Show()
       f.noImage:Hide()
     end
   else
-    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r","|cffffcc55Mapas de ruta|r","|cffffcc55路线图|r"))
+    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r","|cffffcc55Mapas de ruta|r"))
     f.routeSelected:SetText("")
     f.prevRoute:Hide(); f.nextRoute:Hide()
     for i=1,#f.routeButtons do f.routeButtons[i]:Hide() end
@@ -839,8 +804,7 @@ function AG:RefreshGuide()
     f.image:Hide()
     f.noImage:SetText(tChoice(lang,
       "No route image is available for this level range yet. The text guide remains active.",
-      "Aún no hay una imagen de ruta disponible para este rango de nivel. La guía de texto sigue activa.",
-      "该等级段暂时没有可用的路线图片，文字指南仍然有效。"
+      "Aún no hay una imagen de ruta disponible para este rango de nivel. La guía de texto sigue activa."
     ))
     f.noImage:Show()
   end
