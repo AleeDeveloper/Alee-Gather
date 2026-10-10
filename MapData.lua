@@ -37,25 +37,6 @@ AG.MinimapDiameterYards = {
   indoor  = {[0]=300,[1]=240,[2]=180,[3]=120,[4]=80,[5]=50},
 }
 
-
-function AG:GetPlayerPosition()
-  -- SetMapToCurrentZone() changes the world map selection in WoW 3.3.5a.
-  -- If the map is open, return the last cached player position instead so the
-  -- user can freely right-click back to region/continent and inspect other zones.
-  if WorldMapFrame and WorldMapFrame:IsShown() then
-    if self._playerZoneKey and self._playerX and self._playerY then
-      return self._playerZoneKey, self._playerX, self._playerY
-    end
-    return nil
-  end
-
-  SetMapToCurrentZone()
-  local key = GetMapInfo()
-  local x,y = GetPlayerMapPosition("player")
-  if not key or not x or not y or (x==0 and y==0) then return nil end
-
-  self._playerZoneKey = key
-  self._playerX = x
-  self._playerY = y
-  return key, x, y
-end
+function AG:GetZoneKey()if WorldMapFrame and WorldMapFrame:IsShown()then return self._playerZoneKey end;SetMapToCurrentZone();local k=GetMapInfo();if k then self._playerZoneKey=k end;return k end
+function AG:GetPlayerPosition()if WorldMapFrame and WorldMapFrame:IsShown()then if self._playerZoneKey and self._playerX and self._playerY then return self._playerZoneKey,self._playerX,self._playerY end;return nil end;SetMapToCurrentZone();local k=GetMapInfo();local x,y=GetPlayerMapPosition("player");if not k or not x or not y or(x==0 and y==0)then return nil end;self._playerZoneKey=k;self._playerX=x;self._playerY=y;self._playerStaticZoneID=self:GetPlayerStaticZoneID(k);return k,x,y end
+function AG:RefreshPlayerPositionCache()if WorldMapFrame and WorldMapFrame:IsShown()then return self._playerZoneKey,self._playerX,self._playerY end;return self:GetPlayerPosition()end

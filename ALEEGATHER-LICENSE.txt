@@ -3,19 +3,5 @@ AleeGather License
 Copyright (c) 2026 AleeDeveloper
 All rights reserved.
 
-This license applies to the original AleeGather source code and original assets
-created specifically for the AleeGather project.
-
-You may download and use AleeGather for personal, non-commercial gameplay.
-You may not redistribute, sell, repackage, publish modified versions, or use
-AleeGather or substantial portions of its original code in another addon or
-commercial product without prior permission from the copyright holder.
-
-Third-party components, artwork, route maps, or other materials included with
-AleeGather are NOT covered by this license. They remain subject to their own
-licenses and copyright terms. See THIRD-PARTY-NOTICES.txt and any accompanying
-third-party license files for details.
-
-Project: AleeGather / Gather Alee
-Author: AleeDeveloper
-Version: 0.40
+Original AleeGather code/assets remain the property of AleeDeveloper.
+pfQuest-derived data and tracking artwork are covered by PFQUEST-LICENSE.txt.

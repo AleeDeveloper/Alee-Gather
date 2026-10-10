@@ -503,47 +503,12 @@ AG.GuideData = {
   },
 }
 
--- Chinese guide text from the zhCN locale, merged into GuideData by
--- category/stage/route index so the data above stays untouched.
-do
-  local loc=AleeGatherLocales and AleeGatherLocales["zhCN"]
-  local g=loc and loc._guide
-  if g then
-    for cat,stages in pairs(g) do
-      local dst=AG.GuideData[cat]
-      if dst then
-        for si,s in pairs(stages) do
-          local st=dst[si]
-          if st then
-            st.zonesCN=s.zonesCN or st.zonesCN
-            st.nodesTextCN=s.nodesTextCN or st.nodesTextCN
-            if s.routes then
-              for ri,r in pairs(s.routes) do
-                local rt=st.routes and st.routes[ri]
-                if rt then
-                  rt.labelCN=r.labelCN or rt.labelCN
-                  rt.captionCN=r.captionCN or rt.captionCN
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-end
-
 local function isSpanish(lang)
   return lang=="esES" or lang=="esMX"
 end
 
-local function isChinese(lang)
-  return lang=="zhCN" or lang=="zhTW"
-end
-
-local function tChoice(lang,en,es,cn)
+local function tChoice(lang,en,es)
   if isSpanish(lang) then return es end
-  if isChinese(lang) and cn then return cn end
   return en
 end
 
@@ -593,8 +558,7 @@ function AG:GetGuideStageIndex(category, skill)
 end
 
 local function makeRouteButton(parent)
-  local b=CreateFrame("Button",nil,parent,"UIPanelButtonTemplate")
-  b:SetWidth(112); b:SetHeight(20)
+  local b=AG:CreateThemedButton(parent,112,20)
   b:SetScript("OnClick",function(self)
     if AG and AG.SelectGuideRoute then AG:SelectGuideRoute(self.routeIndex or 1) end
   end)
@@ -603,41 +567,40 @@ end
 
 function AG:InitializeGuide()
   local f=CreateFrame("Frame","AleeGatherGuide",UIParent)
-  self.guide=f
+  self.guide=f; self:ApplyWindowStyle(f,self.db.profile.guideOpacity or 0.95)
   -- Close with ESC like a native WoW panel.
+  UISpecialFrames=UISpecialFrames or {}
   local registered=false
-  for _,name in ipairs(UISpecialFrames or {}) do
+  for _,name in ipairs(UISpecialFrames) do
     if name=="AleeGatherGuide" then registered=true break end
   end
   if not registered then table.insert(UISpecialFrames,"AleeGatherGuide") end
-  f:SetWidth(720); f:SetHeight(660); f:SetPoint("CENTER",UIParent,"CENTER",0,0)
+  f:SetWidth(720); f:SetHeight(712); f:SetPoint("CENTER",UIParent,"CENTER",0,0)
   f:SetFrameStrata("DIALOG")
-  f:SetBackdrop({bgFile="Interface\\DialogFrame\\UI-DialogBox-Background",edgeFile="Interface\\DialogFrame\\UI-DialogBox-Border",tile=true,tileSize=32,edgeSize=32,insets={left=11,right=12,top=12,bottom=11}})
   f:SetAlpha((self.db and self.db.profile and self.db.profile.guideOpacity) or 0.95)
   f:EnableMouse(true); f:SetMovable(true); f:RegisterForDrag("LeftButton")
   f:SetScript("OnDragStart",function(self) self:StartMoving() end)
   f:SetScript("OnDragStop",function(self) self:StopMovingOrSizing() end)
   f:Hide()
 
-  f.title=f:CreateFontString(nil,"OVERLAY","GameFontNormalLarge"); f.title:SetPoint("TOPLEFT",24,-22)
-  f.prof=f:CreateFontString(nil,"OVERLAY","GameFontHighlight"); f.prof:SetPoint("TOPLEFT",24,-54); f.prof:SetWidth(672); f.prof:SetJustifyH("LEFT")
-  f.range=f:CreateFontString(nil,"OVERLAY","GameFontNormal"); f.range:SetPoint("TOPLEFT",24,-80); f.range:SetWidth(672); f.range:SetJustifyH("LEFT")
-  f.nodes=f:CreateFontString(nil,"OVERLAY","GameFontHighlight"); f.nodes:SetPoint("TOPLEFT",24,-105); f.nodes:SetWidth(672); f.nodes:SetJustifyH("LEFT")
-  f.zones=f:CreateFontString(nil,"OVERLAY","GameFontHighlight"); f.zones:SetPoint("TOPLEFT",24,-133); f.zones:SetWidth(672); f.zones:SetJustifyH("LEFT"); f.zones:SetJustifyV("TOP")
+  f.title=f:CreateFontString(nil,"OVERLAY","GameFontNormalLarge"); f.title:SetPoint("TOPLEFT",28,-20)
+  f.prof=f:CreateFontString(nil,"OVERLAY","GameFontHighlight"); f.prof:SetPoint("TOPLEFT",28,-61); f.prof:SetWidth(672); f.prof:SetJustifyH("LEFT")
+  f.range=f:CreateFontString(nil,"OVERLAY","GameFontNormal"); f.range:SetPoint("TOPLEFT",28,-91); f.range:SetWidth(672); f.range:SetJustifyH("LEFT")
+  f.nodes=f:CreateFontString(nil,"OVERLAY","GameFontHighlight"); f.nodes:SetPoint("TOPLEFT",28,-119); f.nodes:SetWidth(672); f.nodes:SetJustifyH("LEFT")
+  f.zones=f:CreateFontString(nil,"OVERLAY","GameFontHighlight"); f.zones:SetPoint("TOPLEFT",28,-151); f.zones:SetWidth(672); f.zones:SetJustifyH("LEFT"); f.zones:SetJustifyV("TOP")
 
   f.routeTitle=f:CreateFontString(nil,"OVERLAY","GameFontNormal")
-  f.routeTitle:SetPoint("TOPLEFT",24,-190)
+  f.routeTitle:SetPoint("TOPLEFT",28,-216)
   f.routeTitle:SetWidth(672)
   f.routeTitle:SetJustifyH("LEFT")
 
   f.stageSelected=f:CreateFontString(nil,"OVERLAY","GameFontHighlightLarge")
-  f.stageSelected:SetPoint("TOPRIGHT",-112,-78)
+  f.stageSelected:SetPoint("TOPRIGHT",-116,-92)
   f.stageSelected:SetWidth(120)
   f.stageSelected:SetJustifyH("RIGHT")
 
-  f.prevStage=CreateFrame("Button",nil,f,"UIPanelButtonTemplate")
-  f.prevStage:SetWidth(28); f.prevStage:SetHeight(20); f.prevStage:SetText("<")
-  f.prevStage:SetPoint("TOPRIGHT",-80,-76)
+  f.prevStage=AG:CreateThemedButton(f,28,20); f.prevStage:SetText("<")
+  f.prevStage:SetPoint("TOPRIGHT",-82,-90)
   f.prevStage:SetScript("OnClick",function()
     if not AG.guideCurrentStages or #AG.guideCurrentStages==0 then return end
     local i=(f.stageIndex or 1)-1
@@ -645,9 +608,8 @@ function AG:InitializeGuide()
     AG:SelectGuideStage(i)
   end)
 
-  f.nextStage=CreateFrame("Button",nil,f,"UIPanelButtonTemplate")
-  f.nextStage:SetWidth(28); f.nextStage:SetHeight(20); f.nextStage:SetText(">")
-  f.nextStage:SetPoint("TOPRIGHT",-48,-76)
+  f.nextStage=AG:CreateThemedButton(f,28,20); f.nextStage:SetText(">")
+  f.nextStage:SetPoint("TOPRIGHT",-50,-90)
   f.nextStage:SetScript("OnClick",function()
     if not AG.guideCurrentStages or #AG.guideCurrentStages==0 then return end
     local i=(f.stageIndex or 1)+1
@@ -660,25 +622,24 @@ function AG:InitializeGuide()
     local b=makeRouteButton(f)
     local row=math.floor((i-1)/3)
     local col=(i-1)%3
-    b:SetPoint("TOPLEFT",24 + (col*124), -214 - (row*24))
+    b:SetPoint("TOPLEFT",28 + (col*128), -246 - (row*27))
     b:Hide()
     f.routeButtons[i]=b
   end
 
   f.routeCaption=f:CreateFontString(nil,"OVERLAY","GameFontHighlight")
-  f.routeCaption:SetPoint("TOPLEFT",24,-264)
+  f.routeCaption:SetPoint("TOPLEFT",28,-307)
   f.routeCaption:SetWidth(672)
   f.routeCaption:SetJustifyH("LEFT")
   f.routeCaption:SetJustifyV("TOP")
 
   f.routeSelected=f:CreateFontString(nil,"OVERLAY","GameFontNormalLarge")
-  f.routeSelected:SetPoint("TOPRIGHT",-64,-190)
+  f.routeSelected:SetPoint("TOPRIGHT",-68,-216)
   f.routeSelected:SetWidth(260)
   f.routeSelected:SetJustifyH("RIGHT")
 
-  f.prevRoute=CreateFrame("Button",nil,f,"UIPanelButtonTemplate")
-  f.prevRoute:SetWidth(28); f.prevRoute:SetHeight(20); f.prevRoute:SetText("<")
-  f.prevRoute:SetPoint("TOPRIGHT",-98,-214)
+  f.prevRoute=AG:CreateThemedButton(f,28,20); f.prevRoute:SetText("<")
+  f.prevRoute:SetPoint("TOPRIGHT",-102,-246)
   f.prevRoute:SetScript("OnClick",function()
     if not AG.guideCurrentRoutes or #AG.guideCurrentRoutes==0 then return end
     local i=(f.routeIndex or 1)-1
@@ -686,9 +647,8 @@ function AG:InitializeGuide()
     AG:SelectGuideRoute(i)
   end)
 
-  f.nextRoute=CreateFrame("Button",nil,f,"UIPanelButtonTemplate")
-  f.nextRoute:SetWidth(28); f.nextRoute:SetHeight(20); f.nextRoute:SetText(">")
-  f.nextRoute:SetPoint("TOPRIGHT",-64,-214)
+  f.nextRoute=AG:CreateThemedButton(f,28,20); f.nextRoute:SetText(">")
+  f.nextRoute:SetPoint("TOPRIGHT",-68,-246)
   f.nextRoute:SetScript("OnClick",function()
     if not AG.guideCurrentRoutes or #AG.guideCurrentRoutes==0 then return end
     local i=(f.routeIndex or 1)+1
@@ -697,13 +657,13 @@ function AG:InitializeGuide()
   end)
 
   f.imageFrame=CreateFrame("Frame",nil,f)
-  f.imageFrame:SetWidth(648); f.imageFrame:SetHeight(328)
-  f.imageFrame:SetPoint("TOPLEFT",36,-292)
+  f.imageFrame:SetWidth(648); f.imageFrame:SetHeight(304)
+  f.imageFrame:SetPoint("TOPLEFT",36,-341)
   f.imageFrame:SetBackdrop({bgFile="Interface\\Tooltips\\UI-Tooltip-Background",edgeFile="Interface\\Tooltips\\UI-Tooltip-Border",tile=true,tileSize=8,edgeSize=12,insets={left=3,right=3,top=3,bottom=3}})
   f.imageFrame:SetBackdropColor(0,0,0,0.85)
 
   f.image=f.imageFrame:CreateTexture(nil,"ARTWORK")
-  f.image:SetWidth(640); f.image:SetHeight(320)
+  f.image:SetWidth(640); f.image:SetHeight(296)
   f.image:SetPoint("CENTER",f.imageFrame,"CENTER",0,0)
   f.image:SetTexCoord(0,1,0,1)
 
@@ -715,13 +675,13 @@ function AG:InitializeGuide()
 
 
   f.note=f:CreateFontString(nil,"OVERLAY","GameFontDisableSmall")
-  f.note:SetPoint("BOTTOMLEFT",28,18)
+  f.note:SetPoint("BOTTOMLEFT",30,22)
   f.note:SetWidth(560)
   f.note:SetJustifyH("LEFT")
 
-  f.close=CreateFrame("Button",nil,f,"UIPanelButtonTemplate")
-  f.close:SetWidth(96); f.close:SetHeight(22); f.close:SetPoint("BOTTOMRIGHT",-28,18)
+  f.close=AG:CreateThemedButton(f,100,24); f.close:SetPoint("BOTTOMRIGHT",-30,18)
   f.close:SetScript("OnClick",function() f:Hide() end)
+  self:ApplyThemeDetails(f)
 end
 
 function AG:SelectGuideStage(index)
@@ -761,7 +721,7 @@ function AG:RefreshGuide()
     f.routeCaption:SetText("")
     f.image:SetTexture(nil)
     f.image:Hide()
-    f.noImage:SetText(tChoice(lang,"No route image is available for this profession yet.","Aún no hay una imagen de ruta disponible para esta profesión.","该专业暂时没有可用的路线图片。"))
+    f.noImage:SetText(tChoice(lang,"No route image is available for this profession yet.","Aún no hay una imagen de ruta disponible para esta profesión."))
     f.noImage:Show()
     for i=1,#f.routeButtons do f.routeButtons[i]:Hide() end
     f.note:SetText(self:L("GUIDE_LIGHT"))
@@ -795,16 +755,16 @@ function AG:RefreshGuide()
     f.prevStage:Hide(); f.nextStage:Hide()
   end
   local nodeLabel=(category=="Skinning") and self:L("GUIDE_TARGETS") or self:L("GUIDE_NODES")
-  local nodeText=tChoice(lang, stage.nodesTextEN, stage.nodesTextES, stage.nodesTextCN) or nodeList(stage.nodes)
+  local nodeText=((lang=="enUS") and stage.nodesTextEN or stage.nodesTextES) or nodeList(stage.nodes)
   f.nodes:SetText(nodeLabel..": |cffffffff"..(nodeText or "").."|r")
-  local zones=tChoice(lang, stage.zonesEN, stage.zonesES, stage.zonesCN)
+  local zones=(lang=="enUS") and stage.zonesEN or stage.zonesES
   f.zones:SetText(self:L("GUIDE_ZONES")..":\n|cffffffff"..zones.."|r")
   f.note:SetText(self:L("GUIDE_LIGHT"))
 
   local routes=stage.routes or {}
   AG.guideCurrentRoutes=routes
   if #routes>0 then
-    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r", "|cffffcc55Mapas de ruta|r", "|cffffcc55路线图|r"))
+    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r", "|cffffcc55Mapas de ruta|r"))
     f.prevRoute:Show(); f.nextRoute:Show()
     if not f.routeIndex or f.routeIndex>#routes then f.routeIndex=1 end
     for i=1,#f.routeButtons do
@@ -812,7 +772,7 @@ function AG:RefreshGuide()
       local route=routes[i]
       if route then
         btn.routeIndex=i
-        btn:SetText(tChoice(lang, route.labelEN or ("Route "..i), route.labelES or route.labelEN or ("Ruta "..i), route.labelCN or route.labelEN or ("路线 "..i)))
+        btn:SetText(tChoice(lang, route.labelEN or ("Route "..i), route.labelES or route.labelEN or ("Ruta "..i)))
         btn:Show()
       else
         btn:Hide()
@@ -821,16 +781,16 @@ function AG:RefreshGuide()
 
     local route=routes[f.routeIndex]
     if route then
-      local routeName=tChoice(lang, route.labelEN or ("Route "..f.routeIndex), route.labelES or route.labelEN or ("Ruta "..f.routeIndex), route.labelCN or route.labelEN or ("路线 "..f.routeIndex))
+      local routeName=tChoice(lang, route.labelEN or ("Route "..f.routeIndex), route.labelES or route.labelEN or ("Ruta "..f.routeIndex))
       f.routeSelected:SetText("|cffffffff"..routeName.."|r  |cff888888"..f.routeIndex.."/"..#routes.."|r")
-      f.routeCaption:SetText("|cffffffff"..tChoice(lang, route.captionEN or "", route.captionES or route.captionEN or "", route.captionCN or route.captionEN or "").."|r")
+      f.routeCaption:SetText("|cffffffff"..tChoice(lang, route.captionEN or "", route.captionES or route.captionEN or "").."|r")
       f.image:SetTexture(route.image)
       f.image:SetTexCoord(0,1,0,1)
       f.image:Show()
       f.noImage:Hide()
     end
   else
-    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r","|cffffcc55Mapas de ruta|r","|cffffcc55路线图|r"))
+    f.routeTitle:SetText(tChoice(lang,"|cffffcc55Route maps|r","|cffffcc55Mapas de ruta|r"))
     f.routeSelected:SetText("")
     f.prevRoute:Hide(); f.nextRoute:Hide()
     for i=1,#f.routeButtons do f.routeButtons[i]:Hide() end
@@ -839,11 +799,11 @@ function AG:RefreshGuide()
     f.image:Hide()
     f.noImage:SetText(tChoice(lang,
       "No route image is available for this level range yet. The text guide remains active.",
-      "Aún no hay una imagen de ruta disponible para este rango de nivel. La guía de texto sigue activa.",
-      "该等级段暂时没有可用的路线图片，文字指南仍然有效。"
+      "Aún no hay una imagen de ruta disponible para este rango de nivel. La guía de texto sigue activa."
     ))
     f.noImage:Show()
   end
+  self:ApplyThemeDetails(f)
 end
 
 function AG:ToggleGuide()

@@ -138,62 +138,8 @@ add(450, "Herb Gathering", "Tiger Lily", "Lirio atigrado", "Lirio atigrado", 375
 add(451, "Herb Gathering", "Firethorn", "Espino de fuego", "Espino de fuego", 360)
 add(452, "Herb Gathering", "Frozen Herb", "Hierba congelada", "Hierba congelada", 400)
 add(453, "Herb Gathering", "Frost Lotus", "Loto de escarcha", "Loto de escarcha", 450)
-add(501, "Treasure", "Giant Clam", "Almeja gigante", "Almeja gigante", 0)
-add(502, "Treasure", "Battered Chest", "Cofre maltrecho", "Cofre maltrecho", 0)
-add(503, "Treasure", "Tattered Chest", "Cofre ajado", "Cofre ajado", 0)
-add(504, "Treasure", "Solid Chest", "Cofre macizo", "Cofre macizo", 0)
-add(505, "Treasure", "Large Iron Bound Chest", "Cofre reforzado con hierro grande", "Cofre reforzado con hierro grande", 0)
-add(506, "Treasure", "Large Solid Chest", "Cofre macizo grande", "Cofre macizo grande", 0)
-add(507, "Treasure", "Large Battered Chest", "Cofre maltrecho grande", "Cofre maltrecho grande", 0)
-add(508, "Treasure", "Buccaneer's Strongbox", "Caja fuerte de bucanero", "Caja fuerte de bucanero", 0)
-add(509, "Treasure", "Large Mithril Bound Chest", "Cofre reforzado con mitril grande", "Cofre reforzado con mitril grande", 0)
-add(510, "Treasure", "Large Darkwood Chest", "Cofre grande de Leñoscuro", "Cofre grande de Leñoscuro", 0)
-add(511, "Treasure", "Un'Goro Dirt Pile", "Montón de porquería de Un'Goro", "Montón de porquería de Un'Goro", 0)
-add(512, "Treasure", "Bloodpetal Sprout", "Brote pétalo de sangre", "Brote pétalo de sangre", 0)
-add(513, "Treasure", "Blood of Heroes", "[Blood of Heroes]", "Sangre de héroes", 0)
-add(514, "Treasure", "Practice Lockbox", "Arcón de prácticas", "Arcón de prácticas", 0)
-add(515, "Treasure", "Battered Footlocker", "Baúl maltrecho", "Baúl maltrecho", 0)
-add(516, "Treasure", "Waterlogged Footlocker", "Baúl con marcas de agua", "Baúl con marcas de agua", 0)
-add(517, "Treasure", "Dented Footlocker", "Baúl abollado", "Baúl abollado", 0)
-add(518, "Treasure", "Mossy Footlocker", "Baúl mohoso", "Baúl mohoso", 0)
-add(519, "Treasure", "Scarlet Footlocker", "Baúl Escarlata", "Baúl Escarlata", 0)
-add(520, "Treasure", "Burial Chest", "Sarcófago", "Sarcófago", 0)
-add(521, "Treasure", "Fel Iron Chest", "Cofre de hierro vil", "Cofre de hierro vil", 0)
-add(522, "Treasure", "Heavy Fel Iron Chest", "Cofre pesado de hierro vil", "Cofre pesado de hierro vil", 0)
-add(523, "Treasure", "Adamantite Bound Chest", "Cofre reforzado con adamantita", "Cofre reforzado con adamantita", 0)
-add(524, "Treasure", "Felsteel Chest", "Cofre de acero vil", "Cofre de acero vil", 0)
-add(525, "Treasure", "Glowcap", "Fluochampiñón", "Fluochampiñón", 0)
-add(526, "Treasure", "Wicker Chest", "Cofre de mimbre", "Cofre de mimbre", 0)
-add(527, "Treasure", "Primitive Chest", "Cofre primitivo", "Cofre primitivo", 0)
-add(528, "Treasure", "Solid Fel Iron Chest", "Cofre sólido de hierro vil", "Cofre sólido de hierro vil", 0)
-add(529, "Treasure", "Bound Fel Iron Chest", "Cofre reforzado con hierro vil", "Cofre reforzado con hierro vil", 0)
-add(530, "Treasure", "Bound Adamantite Chest", "Cofre reforzado con adamantita", "Cofre de Adamanita blindado", 0)
-add(531, "Treasure", "Netherwing Egg", "Huevo de Ala Abisal", "Huevo de Ala Abisal", 0)
-add(532, "Treasure", "Everfrost Chip", "Esquirla de siemprescarcha", "Esquirla de siemprescarcha", 0)
-add(533, "Treasure", "Brightly Colored Egg", "Huevo de Colores Vivos", "Huevo de Colores Vivos", 0)
-add(534, "Treasure", "Silken Treasure Chest", "Arqueta de seda", "Arqueta de seda", 0)
-add(535, "Treasure", "Sturdy Treasure Chest", "Arqueta robusta", "Arqueta robusta", 0)
-add(536, "Treasure", "Runestone Treasure Chest", "Arqueta de piedras rúnicas", "Arqueta de piedras rúnicas", 0)
-add(537, "Treasure", "Silverbound Treasure Chest", "Arqueta reforzada con plata", "Arqueta reforzada con plata", 0)
 
--- Chinese node names from the zhCN locale. Registering them in NodeByName is
--- required for tooltip matching on zhCN/zhTW clients.
-do
-  local loc=AleeGatherLocales and AleeGatherLocales["zhCN"]
-  local cn=loc and loc._nodes
-  if cn then
-    for id,name in pairs(cn) do
-      local n=AG.Nodes[id]
-      if n then n.cn=name; AG.NodeByName[string.lower(name)]=id end
-    end
-  end
-  local aliases=loc and loc._nodesAliases
-  if aliases then
-    for id,name in pairs(aliases) do
-      if AG.Nodes[id] then AG.NodeByName[string.lower(name)]=id end
-    end
-  end
-end
+add(590, "Skinning", "Skinning Spot", "Punto de desuello", "Punto de desollar", 1)
 
 function AG:GetNodeIDByName(name)
   if not name then return nil end
@@ -208,7 +154,10 @@ function AG:GetNodeName(id)
   local lang = self:GetLanguage()
   if lang == 'esMX' then return n.mx end
   if lang == 'esES' then return n.es end
-  if (lang == 'zhCN' or lang == 'zhTW') and n.cn then return n.cn end
   return n.en
 end
 
+function AG:GetCategoryForNode(id)
+  local n = self.Nodes[id]
+  return n and n.category or nil
+end

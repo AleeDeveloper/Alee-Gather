@@ -1,27 +1,26 @@
 ## Interface: 30300
 ## Title: Gather Alee
-## Notes: Lightweight gathering tracker with map/minimap nodes, radar, sessions and leveling guides for WotLK 3.3.5a
-## Author: Alee Community
-## Version: 0.40.0-wotlk
-## X-License: All Rights Reserved
+## Notes: Gathering tracker for WoW WotLK 3.3.5a / Warmane
+## Author: AleeDeveloper
+## Version: 0.98.0-wotlk
 ## SavedVariables: AleeGatherDB
 ## DefaultState: Enabled
 
 Locale\enUS.lua
 Locale\esES.lua
 Locale\esMX.lua
-Locale\zhCN.lua
 Core.lua
 MapData.lua
-LegacyZones.lua
 Nodes.lua
-NodeTextures.lua
+Data\PfQuestZones.lua
+Data\PfQuestIcons.lua
+Data\StaticClassicTBC.lua
 Database.lua
 Collector.lua
+Tooltip.lua
 Display.lua
 HUD.lua
 Guide.lua
 Radar.lua
 Config.lua
 InterfaceOptions.lua
-Import.lua

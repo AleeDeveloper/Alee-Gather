@@ -1,0 +1,10 @@
+AleeGather Third-Party Notice
+
+pfQuest-derived static gathering data and tracking artwork are included under the MIT license. See PFQUEST-LICENSE.txt.
+
+AleeGather v0.60 no longer uses GatherMate node artwork.
+
+Minimap button icon
+-------------------
+Artwork/GatherMateIcon.tga is retained from the previously used GatherMate artwork package
+for the AleeGather minimap button. Its original license is preserved in GATHERMATE-LICENSE.txt.
