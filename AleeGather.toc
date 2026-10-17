@@ -9,6 +9,7 @@
 Locale\enUS.lua
 Locale\esES.lua
 Locale\esMX.lua
+Locale\zhCN.lua
 Core.lua
 MapData.lua
 Nodes.lua

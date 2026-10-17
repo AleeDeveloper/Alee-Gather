@@ -441,7 +441,7 @@ end
 
 local defaults={language="auto",showMap=true,showMinimap=true,showHUD=true,showButton=true,mapScale=1,miniScale=1,alpha=.95,mapAlpha=.95,guideOpacity=.95,showOnlySkill=false,hideLowSkill=false,minimapButtonAngle=220,borderStyle=2,backgroundStyle=1,themeStyle=1,backgroundTheme=2,depletedSeconds=300,adaptiveRespawn=true,professionEnabled={},hud={x=20,y=-210,locked=false},radar={enabled=true,x=320,y=20,size=260,range=700,opacity=.72,iconScale=1,iconAlpha=.95,locked=false},debug=false}
 local function defaultsCopy(s,d) for k,v in pairs(s) do if type(v)=="table" then if type(d[k])~="table" then d[k]={} end defaultsCopy(v,d[k]) elseif d[k]==nil then d[k]=v end end end
-function AG:GetLanguage() if self.db and self.db.profile.language~="auto" then return self.db.profile.language end local l=GetLocale();return l=="esMX" and "esMX" or (l=="esES" and "esES" or "enUS") end
+function AG:GetLanguage() if self.db and self.db.profile.language~="auto" then return self.db.profile.language end local l=GetLocale();if l=="esMX" then return "esMX" end;if l=="esES" then return "esES" end;if l=="zhCN" or l=="zhTW" then return "zhCN" end;return "enUS" end
 function AG:L(k)local l=self:GetLanguage();local t=AleeGatherLocales and AleeGatherLocales[l];local e=AleeGatherLocales and AleeGatherLocales.enUS;return(t and t[k])or(e and e[k])or k end
 function AG:Print(m)DEFAULT_CHAT_FRAME:AddMessage("|cff55dd88AleeGather|r: "..tostring(m))end
 AG.event=CreateFrame("Frame");for _,e in ipairs({"ADDON_LOADED","PLAYER_LOGIN","PLAYER_ENTERING_WORLD","SKILL_LINES_CHANGED"})do AG.event:RegisterEvent(e)end
